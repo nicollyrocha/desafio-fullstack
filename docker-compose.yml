@@ -21,7 +21,6 @@ services:
     restart: always
     environment:
       NODE_ENV: development
-      MYSQL_ROOT_PASSWORD: password@2025
       MYSQL_DATABASE: desafio_db
     volumes:
       - mysql_data:/var/lib/mysql
