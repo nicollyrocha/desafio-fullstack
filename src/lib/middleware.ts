@@ -24,6 +24,52 @@ export function middleware(req: NextRequest) {
   }
 }
 
+export async function getUserIdFromCookie(): Promise<number | null> {
+  const { cookies } = await import("next/headers");
+  const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
+  if (!token) return null;
+  try {
+    const payload = jwt.verify(token, JWT_SECRET) as { id: number };
+    return payload.id;
+  } catch {
+    return null;
+  }
+}
+
+export function getUserIdFromToken(req: Request): number | null {
+  const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
+  const authHeader = req.headers.get("Authorization");
+  const token = authHeader?.startsWith("Bearer ")
+    ? authHeader.substring(7)
+    : null;
+
+  if (!token) return null;
+
+  try {
+    const payload = jwt.verify(token, JWT_SECRET) as { id: number };
+    return payload.id;
+  } catch {
+    return null;
+  }
+}
+
+export async function getUserId(req: Request): Promise<number | null> {
+  const userIdFromToken = getUserIdFromToken(req);
+  if (userIdFromToken) return userIdFromToken;
+
+  return await getUserIdFromCookie();
+}
+
+export async function getToken(): Promise<string | null> {
+  const { cookies } = await import("next/headers");
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
+
+  return token || null;
+}
+
 export const config = {
   matcher: ["/api/:path*"],
 };

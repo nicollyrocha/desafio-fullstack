@@ -2,10 +2,16 @@ export const Input = ({
   name,
   type,
   label,
+  value,
+  onChange,
+  className,
 }: {
   name: string;
   type: string;
   label: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  className?: string;
 }) => {
   return (
     <div className="flex flex-col gap-1">
@@ -13,9 +19,13 @@ export const Input = ({
         {label && <label htmlFor={name}>{label}</label>}
       </div>
       <input
+        value={value}
+        onChange={onChange}
         name={name}
         type={type}
-        className="bg-white outline-1 outline-[#ca8554] rounded-sm focus:outline-2 p-1 text-black"
+        className={`text-black border-[#ca8554] block w-full p-1 bg-white border border-default-medium text-sm rounded-sm focus:outline-2 focus:outline-[#ca8554] ${
+          className ?? ""
+        }`}
       />
     </div>
   );

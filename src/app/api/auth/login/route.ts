@@ -32,19 +32,22 @@ export async function POST(req: Request) {
       token,
     });
 
-    // Set cookies for server-side access
     res.cookies.set("token", token, {
       httpOnly: true,
       sameSite: "lax",
       path: "/",
       maxAge: 60 * 60, // 1 hour
     });
-    res.cookies.set("userid", String(user.id), {
-      httpOnly: true,
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60,
-    });
+    res.cookies.set(
+      "user",
+      JSON.stringify({ id: user.id, name: user.name, email: user.email }),
+      {
+        httpOnly: false,
+        sameSite: "lax",
+        path: "/",
+        maxAge: 60 * 60, // 1 hour
+      }
+    );
 
     return res;
   } catch (err: unknown) {

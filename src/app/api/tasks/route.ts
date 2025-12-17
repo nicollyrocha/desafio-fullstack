@@ -1,23 +1,9 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
 import { prisma } from "@/src/lib/db";
+import { getUserId } from "@/src/lib/middleware";
 
-async function getUserIdFromCookie(): Promise<number | null> {
-  const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
-  if (!token) return null;
-  try {
-    const payload = jwt.verify(token, JWT_SECRET) as { id: number };
-    return payload.id;
-  } catch {
-    return null;
-  }
-}
-
-export async function GET() {
-  const userId = await getUserIdFromCookie();
+export async function GET(req: Request) {
+  const userId = await getUserId(req);
   if (!userId) {
     return NextResponse.json({ message: "Não autenticado" }, { status: 401 });
   }
@@ -34,7 +20,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const userId = await getUserIdFromCookie();
+  const userId = await getUserId(req);
   if (!userId) {
     return NextResponse.json({ message: "Não autenticado" }, { status: 401 });
   }
