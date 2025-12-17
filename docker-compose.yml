@@ -1,27 +1,16 @@
 version: "3.9"
 
 services:
-  app:
-    command: yarn dev
-    build: .
-    container_name: next_app
-    ports:
-      - "3000:3000"
-    env_file:
-      - .env
-    depends_on:
-      - db
-    volumes:
-      - .:/app
-      - /app/node_modules
-
   db:
     image: mysql:8.0
     container_name: mysql_db
     restart: always
+    command: --default-authentication-plugin=mysql_native_password
     environment:
-      NODE_ENV: development
       MYSQL_DATABASE: desafio_db
+      MYSQL_ROOT_PASSWORD: password@2025
+      MYSQL_ROOT_HOST: "%"
+      TZ: America/Sao_Paulo
     volumes:
       - mysql_data:/var/lib/mysql
 

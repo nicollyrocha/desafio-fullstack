@@ -1,5 +1,5 @@
 import { DataTypes, Model } from "sequelize";
-import { sequelize } from "../../../lib/db";
+import { sequelize } from "../db";
 
 export class Task extends Model {
   public id!: number;
@@ -7,8 +7,8 @@ export class Task extends Model {
   public title!: string;
   public description!: string;
   public status!: "pending" | "in_progress" | "completed";
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  public readonly created_at!: Date;
+  public readonly updated_at!: Date;
 }
 
 Task.init(
@@ -35,12 +35,12 @@ Task.init(
       defaultValue: "pending",
       allowNull: false,
     },
-    createdAt: {
+    created_at: {
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: DataTypes.NOW,
     },
-    updatedAt: {
+    updated_at: {
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: DataTypes.NOW,
@@ -49,6 +49,7 @@ Task.init(
   {
     sequelize,
     tableName: "tasks",
-    timestamps: true,
+    timestamps: false,
+    underscored: true,
   }
 );

@@ -1,13 +1,54 @@
 import { NextResponse } from "next/server";
-import { User } from "../users.model";
+import { prisma } from "@/src/lib/db";
+import { compare } from "bcrypt";
+import jwt from "jsonwebtoken";
 
-export async function GET() {
-  const users = await User.findAll();
-  return NextResponse.json(users);
-}
+export async function POST(req: Request) {
+  const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
 
-export async function POST(request: Request) {
-  const body = await request.json();
-  const user = await User.create(body);
-  return NextResponse.json(user, { status: 201 });
+  try {
+    const { email, password } = await req.json();
+
+    const user = await prisma.users.findUnique({ where: { email } });
+    if (!user) {
+      return NextResponse.json(
+        { message: "Usuário não encontrado" },
+        { status: 404 }
+      );
+    }
+
+    const isValid = await compare(password, user.password);
+    if (!isValid) {
+      return NextResponse.json({ message: "Senha incorreta" }, { status: 401 });
+    }
+
+    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    const res = NextResponse.json({
+      message: "Login realizado com sucesso",
+      userId: user.id,
+      token,
+    });
+
+    // Set cookies for server-side access
+    res.cookies.set("token", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60, // 1 hour
+    });
+    res.cookies.set("userid", String(user.id), {
+      httpOnly: true,
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60,
+    });
+
+    return res;
+  } catch (err: unknown) {
+    console.error("LOGIN ERROR:", err);
+    return NextResponse.json({ message: "Erro interno" }, { status: 500 });
+  }
 }

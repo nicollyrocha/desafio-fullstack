@@ -9,23 +9,34 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@prisma/adapter-mariadb": "^7.1.0",
+    "@prisma/client": "5",
+    "@tailwindcss/cli": "^4.1.18",
+    "@types/bcrypt": "^6.0.0",
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
     "dotenv": "^17.2.3",
-    "mysql2": "^3.15.3",
-    "next": "16.0.10",
+    "jsonwebtoken": "^9.0.3",
+    "lucide-react": "^0.561.0",
+    "next": "^16.0.10",
     "pg": "^8.16.3",
     "pg-hstore": "^2.3.4",
-    "react": "19.2.1",
-    "react-dom": "19.2.1",
-    "sequelize": "^6.37.7"
+    "prisma": "5",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-toastify": "^11.0.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "autoprefixer": "^10.4.23",
     "eslint": "^9",
     "eslint-config-next": "16.0.10",
-    "tailwindcss": "^4",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18",
     "typescript": "^5"
   }
 }
