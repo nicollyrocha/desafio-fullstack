@@ -5,6 +5,8 @@ import Form from "next/form";
 import { Button } from "@/src/components/button";
 import { FormEvent, useState } from "react";
 import { z } from "zod";
+import { Loader2 } from "lucide-react";
+import { toast } from "react-toastify";
 
 const loginSchema = z.object({
   email: z
@@ -17,6 +19,7 @@ const loginSchema = z.object({
 });
 
 export default function LoginForm() {
+  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{
     email?: string;
     password?: string;
@@ -25,6 +28,7 @@ export default function LoginForm() {
   }>({});
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    setLoading(true);
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
@@ -43,6 +47,7 @@ export default function LoginForm() {
         if (path) fieldErrors[path] = issue.message;
       }
       setErrors(fieldErrors);
+      setLoading(false);
       return;
     }
 
@@ -58,16 +63,24 @@ export default function LoginForm() {
 
       if (!response.ok) {
         const err = await response.json().catch(() => ({}));
-        setErrors({ form: err?.message ?? "Falha ao fazer login." });
+        const errorMsg = err?.message ?? "Falha ao fazer login.";
+        setErrors({ form: errorMsg });
+        toast.error(errorMsg);
+        setLoading(false);
         return;
       }
 
       const data = await response.json();
       console.log(data);
       localStorage.setItem("userid", data.userId);
+      setLoading(false);
       window.location.href = "/dashboard";
-    } catch {
-      setErrors({ form: "Erro de rede. Tente novamente." });
+    } catch (error) {
+      console.error("Erro ao fazer login:", error);
+      const errorMsg = "Erro de rede. Tente novamente.";
+      setErrors({ form: errorMsg });
+      toast.error(errorMsg);
+      setLoading(false);
     }
   }
 
@@ -95,7 +108,9 @@ export default function LoginForm() {
           {errors.form && (
             <div className="text-red-700 text-sm mb-1">{errors.form}</div>
           )}
-          <Button type="submit">Login</Button>
+          <Button type="submit" disabled={loading}>
+            {loading ? <Loader2 className="animate-spin" /> : "Login"}
+          </Button>
         </Form>
         <div className="w-full justify-start mt-2">
           <Button

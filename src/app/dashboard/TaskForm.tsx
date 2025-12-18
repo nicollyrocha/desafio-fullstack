@@ -70,16 +70,22 @@ export function TaskForm() {
 
       if (!response.ok) {
         const err = await response.json().catch(() => ({}));
-        setErrors({ form: err?.message ?? "Falha ao criar tarefa." });
+        const errorMsg = err?.message ?? "Falha ao criar tarefa.";
+        setErrors({ form: errorMsg });
+        toast.error(errorMsg);
         setLoading(false);
         return;
       }
       router.refresh();
       toast.success("Tarefa criada com sucesso!");
-    } catch {
-      setErrors({ form: "Erro de rede. Tente novamente." });
+      setLoading(false);
+    } catch (error) {
+      console.error("Erro ao criar tarefa:", error);
+      const errorMsg = "Erro de rede. Tente novamente.";
+      setErrors({ form: errorMsg });
+      toast.error(errorMsg);
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   return (

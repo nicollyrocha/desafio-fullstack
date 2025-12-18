@@ -65,7 +65,9 @@ export default function RegisterForm() {
 
       if (!response.ok) {
         const err = await response.json().catch(() => ({}));
-        setErrors({ form: err?.message ?? "Falha ao fazer cadastro." });
+        const errorMsg = err?.message ?? "Falha ao fazer cadastro.";
+        setErrors({ form: errorMsg });
+        toast.error(errorMsg);
         setLoading(false);
         return;
       }
@@ -74,10 +76,13 @@ export default function RegisterForm() {
       setTimeout(() => {
         window.location.href = "/login";
       }, 1500);
-    } catch {
-      setErrors({ form: "Erro de rede. Tente novamente." });
+    } catch (error) {
+      console.error("Erro ao fazer cadastro:", error);
+      const errorMsg = "Erro de rede. Tente novamente.";
+      setErrors({ form: errorMsg });
+      toast.error(errorMsg);
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   return (

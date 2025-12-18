@@ -15,20 +15,33 @@ export const Button = ({
 }) => {
   const classNameVariant =
     variant === "secondary"
-      ? "bg-gray-500 text-white px-4 py-2 rounded-sm hover:bg-gray-600 transition-colors cursor-pointer"
+      ? "bg-gray-500 text-white px-4 py-2 rounded-sm transition-colors"
       : variant === "text"
-      ? "bg-transparent text-[#ca8554] py-2 rounded-sm hover:underline transition-colors cursor-pointer w-fit"
+      ? "bg-transparent text-[#ca8554] py-2 rounded-sm transition-colors w-fit"
       : variant === "icon"
-      ? "bg-transparent text-[#ca8554] p-1 rounded-sm hover:bg-[#f0e6e3] transition-colors cursor-pointer"
+      ? "bg-transparent text-[#ca8554] p-1 rounded-sm transition-colors"
       : variant === "danger"
-      ? "bg-red-600 text-white px-4 py-2 rounded-sm hover:bg-red-700 transition-colors cursor-pointer w-fit"
-      : "bg-[#ca8554] text-white px-4 py-2 rounded-sm hover:bg-[#b06e3f] transition-colors cursor-pointer w-fit";
+      ? "bg-red-600 text-white px-4 py-2 rounded-sm transition-colors w-fit"
+      : "bg-[#ca8554] text-white px-4 py-2 rounded-sm transition-colors w-fit";
+
+  const hoverClasses =
+    variant === "secondary"
+      ? "hover:bg-gray-600"
+      : variant === "text"
+      ? "hover:underline"
+      : variant === "icon"
+      ? "hover:bg-[#f0e6e3]"
+      : variant === "danger"
+      ? "hover:bg-red-700"
+      : "hover:bg-[#b06e3f]";
 
   return (
     <button
-      className={`${
-        disabled ? "opacity-50 cursor-not-allowed" : ""
-      } ${classNameVariant} ${className ?? ""}`}
+      className={`${classNameVariant} ${
+        disabled
+          ? "opacity-50 cursor-not-allowed"
+          : `cursor-pointer ${hoverClasses}`
+      } ${className ?? ""}`}
       type={type}
       onClick={onClick}
       disabled={disabled}
