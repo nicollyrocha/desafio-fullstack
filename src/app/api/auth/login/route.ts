@@ -36,7 +36,7 @@ export async function POST(req: Request) {
       httpOnly: true,
       sameSite: "lax",
       path: "/",
-      maxAge: 60 * 60, // 1 hour
+      maxAge: 60 * 60, // 1 hora
     });
     res.cookies.set(
       "user",
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
         httpOnly: false,
         sameSite: "lax",
         path: "/",
-        maxAge: 60 * 60, // 1 hour
+        maxAge: 60 * 60, // 1 hora
       }
     );
 

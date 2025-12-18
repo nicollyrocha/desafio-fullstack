@@ -1,6 +1,7 @@
 import { prisma } from "@/src/lib/db";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { TaskTable } from "./TaskTable";
 import { TaskForm } from "./TaskForm";
 import { LogoutButton } from "./LogoutButton";
@@ -21,14 +22,7 @@ async function getUserIdFromCookie(): Promise<number | null> {
 export default async function DashboardPage() {
   const userId = await getUserIdFromCookie();
   if (!userId) {
-    return (
-      <div className="flex w-full flex-col items-center gap-14">
-        <div className="bg-[#e66e55] w-full p-4 text-white justify-center flex">
-          <div className="text-xl font-semibold">Dashboard</div>
-        </div>
-        <div>Você precisa fazer login para ver suas tarefas.</div>
-      </div>
-    );
+    redirect("/login");
   }
 
   const tarefas = await prisma.tasks.findMany({ where: { user_id: userId } });

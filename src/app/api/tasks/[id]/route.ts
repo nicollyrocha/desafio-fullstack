@@ -20,6 +20,15 @@ export async function PUT(
         { status: 400 }
       );
     }
+    const existing = await prisma.tasks.findFirst({
+      where: { id: taskId, user_id: userId },
+    });
+    if (!existing) {
+      return NextResponse.json(
+        { message: "Task não encontrada" },
+        { status: 404 }
+      );
+    }
     const task = await prisma.tasks.update({
       where: { id: taskId },
       data: {
@@ -56,9 +65,17 @@ export async function DELETE(
         { status: 400 }
       );
     }
-    await prisma.tasks.delete({
-      where: { id: taskId },
+    const existing = await prisma.tasks.findFirst({
+      where: { id: taskId, user_id: userId },
     });
+    if (!existing) {
+      return NextResponse.json(
+        { message: "Task não encontrada" },
+        { status: 404 }
+      );
+    }
+
+    await prisma.tasks.delete({ where: { id: taskId } });
     return NextResponse.json(
       { message: "Tarefa deletada com sucesso" },
       { status: 200 }

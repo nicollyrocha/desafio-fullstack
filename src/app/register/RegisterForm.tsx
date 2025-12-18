@@ -6,7 +6,7 @@ import { Button } from "@/src/components/button";
 import { FormEvent, useRef, useState } from "react";
 import { z } from "zod";
 import { Loader2 } from "lucide-react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 const registerSchema = z.object({
   name: z.string().min(1, { message: "Nome é obrigatório." }),
@@ -82,7 +82,6 @@ export default function RegisterForm() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
-      <ToastContainer />
       <div className="bg-[#f7f2f0] shadow-md flex flex-col items-center justify-center p-6 rounded-md">
         <h1 className="text-2xl font-bold mb-4 p-4">Cadastro</h1>
         <Form

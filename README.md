@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Descrição do projeto
 
-## Getting Started
+Aplicação fullstack de gerenciamento de tarefas com autenticação JWT. Usuários podem registrar, logar e criar/editar/excluir tarefas com status. API em Next.js (App Router) usando Prisma + MySQL; frontend com Tailwind e componentes reutilizáveis; testes end-to-end e de API com Cypress.
 
-First, run the development server:
+## Tecnologias utilizadas
+
+- Next.js (App Router) + React + TypeScript
+- TailwindCSS
+- Prisma ORM
+- MySQL (docker-compose incluso)
+- JSON Web Token (JWT) para autenticação (cookie httpOnly + header Bearer)
+- Cypress para testes (UI e API)
+- Docker/Docker Compose
+
+## Pré-requisitos
+
+- Next 16
+- React 19
+- Typescript
+- Tailwind
+- MySQL 8
+- JWT
+
+## Configuração do banco de dados
+
+1. Suba o MySQL via Docker:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+docker-compose up -d
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Crie/aplique o schema (via Prisma):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+yarn
+yarn prisma migrate deploy
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Opcional: o SQL bruto está em `database/schema.sql`.
 
-## Learn More
+## Variáveis de ambiente (.env)
 
-To learn more about Next.js, take a look at the following resources:
+Crie um arquivo `.env` na raiz com pelo menos (existe um .env.example, coloquei cada credencial separada também para garantir):
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+DATABASE_URL
+JWT_SECRET
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Adapte usuário/senha/host se não usar o compose padrão.
 
-## Deploy on Vercel
+## Instalação
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+yarn
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Rodar o projeto localmente
+
+1. Certifique-se do MySQL rodando e .env configurado.
+2. Execute as migrações: `yarn prisma migrate deploy` (ou `db push` em dev).
+3. Suba o app:
+
+```bash
+yarn dev
+```
+
+Acesse http://localhost:3000.
+
+Observação: você pode rodar apenas o banco no Docker (`docker-compose up -d`) e o Next.js localmente com `yarn dev`, desde que o `.env` aponte para o host/porta corretos (ex.: `localhost:3306`).
+
+## Rodar os testes
+
+- Abrir Cypress UI: `yarn cypress open`
+- Rodar em modo headless (UI + API):
+
+```bash
+yarn cypress run --spec "cypress/e2e/tests/**/*"
+```
+
+## Estrutura de pastas (principal)
+
+- `src/app` — páginas e rotas API (App Router)
+- `src/app/api/auth` — rotas de login/register
+- `src/app/api/tasks` — CRUD de tarefas
+- `src/app/dashboard` — UI de dashboard, tabela e formulários
+- `src/lib` — db Prisma, middleware JWT e modelos
+- `prisma/` — schema Prisma e migrations
+- `cypress/` — testes UI/API
+- `database/schema.sql` — criação manual do banco
+
+## Decisões técnicas importantes
+
+- App Router do Next.js para unificar frontend e API.
+- Prisma com MySQL pela simplicidade de modelagem e migrações.
+- Autenticação via JWT guardado em cookie httpOnly e suporte a header Bearer (getUserId trata ambos).
+- Tailwind para componentes reutilizáveis e facilidade ao criá-los.
+- Cypress para cobrir fluxos UI e endpoints REST, garantindo integrações ponta a ponta.
+
+## Melhorias futuras
+
+- Adicionar testes de integração para middleware e serviços.
+- Observabilidade (logs estruturados e tracing) nas rotas API.
+- Estados de carregamento/erro mais granulares na UI de tarefas.

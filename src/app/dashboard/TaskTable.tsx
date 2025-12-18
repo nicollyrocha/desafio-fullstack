@@ -6,7 +6,7 @@ import { Input } from "@/src/components/input";
 import { Select } from "@/src/components/select";
 import { Check, Loader2, Pencil, Trash2, X } from "lucide-react";
 import { FormatStatus } from "@/src/utils/format-status";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { Dialog } from "@/src/components/dialog";
 
 type Task = {
@@ -123,7 +123,6 @@ export function TaskTable({ tasks }: { tasks: Task[] }) {
 
   return (
     <>
-      <ToastContainer />
       <table className="table-auto border-collapse border border-[#ca8554] w-3xl hidden md:table ">
         <thead>
           <tr className="bg-[#ca8554]/30 h-10">
@@ -146,7 +145,7 @@ export function TaskTable({ tasks }: { tasks: Task[] }) {
                 <td className="border px-4 py-2 text-black border-[#ca8554]">
                   {isEditing ? (
                     <Input
-                      name={`title-${task.id}`}
+                      name={`edit-title-${task.id}`}
                       type="text"
                       label=""
                       value={draft.title}
@@ -161,7 +160,7 @@ export function TaskTable({ tasks }: { tasks: Task[] }) {
                 <td className="border px-4 py-2 text-black border-[#ca8554]">
                   {isEditing ? (
                     <Input
-                      name={`description-${task.id}`}
+                      name={`edit-description-${task.id}`}
                       type="text"
                       label=""
                       value={draft.description}
@@ -176,7 +175,7 @@ export function TaskTable({ tasks }: { tasks: Task[] }) {
                 <td className="border px-4 py-2 text-black border-[#ca8554]">
                   {isEditing ? (
                     <Select
-                      name="status"
+                      name={`edit-status-${task.id}`}
                       options={[
                         { label: "Pending", value: "pending" },
                         { label: "Em progresso", value: "in_progress" },
@@ -202,13 +201,18 @@ export function TaskTable({ tasks }: { tasks: Task[] }) {
                       <Button
                         variant="icon"
                         onClick={updateTask.bind(null, task.id)}
+                        className="confirm-button"
                       >
                         <Check />
                       </Button>
                     </>
                   ) : (
                     <div className="w-full flex justify-center gap-5">
-                      <Button onClick={() => startEdit(task)} variant="icon">
+                      <Button
+                        onClick={() => startEdit(task)}
+                        variant="icon"
+                        className="edit-button"
+                      >
                         <Pencil size={20} />
                       </Button>
                       <Button
@@ -299,7 +303,11 @@ export function TaskTable({ tasks }: { tasks: Task[] }) {
                   </Button>
                 ) : (
                   <div className="">
-                    <Button onClick={() => startEdit(task)} variant="icon">
+                    <Button
+                      onClick={() => startEdit(task)}
+                      variant="icon"
+                      className={task.title.toString()}
+                    >
                       <Pencil size={20} />
                     </Button>
                   </div>
